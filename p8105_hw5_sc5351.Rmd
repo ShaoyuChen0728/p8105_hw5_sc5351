@@ -33,7 +33,7 @@ scale_fill_discrete = scale_fill_viridis_d
 #Describe the raw data. 
 ```{r}
 homicide_df = 
-  read_csv("data/homicide-data.csv", na = c("", "NA", "Unknown")) %>%
+  read_csv("./data/homicide-data.csv", na = c("", "NA", "Unknown")) %>%
   mutate(
     city_state = str_c(city, state, sep = ", "),
     resolution = case_when(
@@ -43,5 +43,15 @@ homicide_df =
     )
   ) %>% 
   filter(city_state != "Tulsa, AL") 
+```
+#In the next code chunk, I group within cities and summarize to produce the total number of homicides and the number that are solved. 
+```{r}
+city_homicide_df = 
+  homicide_df %>% 
+  select(city_state, disposition, resolution) %>% 
+  group_by(city_state) %>% 
+  summarize(
+    hom_total = n(),
+    hom_unsolved = sum(resolution == "unsolved"))
 ```
 
