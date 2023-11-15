@@ -99,7 +99,26 @@ longitudinal_df =
     data = map(file_path,read_csv)
   )
 ```
-
+Iterate over file names and read in data for each subject and tidy the result
+```{r}
+tidy_df = 
+  longitudinal_df|>
+  unnest()|>
+  janitor::clean_names() |>
+  separate(file_names, into = c("arm", "subject_id"), sep = "_") |> 
+  mutate(
+    arm = case_match(
+      arm, 
+      "con" ~ "control", 
+      "exp" ~ "experiment")) |>
+   mutate(subject_id = str_replace(subject_id, ".csv", "")) |>
+  pivot_longer(
+    week_1: week_8,
+    names_to = "week",
+    values_to = "observation"
+  ) |>
+  select(arm, subject_id, week, observation)
+```
 
 
 
