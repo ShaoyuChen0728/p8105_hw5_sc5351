@@ -7,6 +7,7 @@ output: github_document
 
 ```{r setup, include=FALSE}
 library(tidyverse)
+library(ggplot2)
 library(viridis)
 
 knitr::opts_chunk$set(
@@ -87,4 +88,19 @@ test_results %>%
   geom_errorbar(aes(ymin = conf.low, ymax = conf.high)) + 
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 ```
+
+##Problem 2
+a dataframe containing all file names
+```{r}
+longitudinal_df =
+  tibble(
+    file_names = list.files("./data/longitudinal_study/"),
+    file_path = str_c("./data/longitudinal_study/",file_names),
+    data = map(file_path,read_csv)
+  )
+```
+
+
+
+
 
