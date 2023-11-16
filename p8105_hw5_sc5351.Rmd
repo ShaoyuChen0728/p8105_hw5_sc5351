@@ -188,7 +188,7 @@ sim_results_df =
   unnest(estimate_df)
   bind_rows(mu_0)
 ```
-#Make a plot showing the proportion of times the null was rejected (the power of the test) on the y axis and the true value of `mu` on the x axis
+#Make a plot showing the proportion of times the null was rejected (the power of the test) on the y axis and the true value of `mu` on the x axis.
 ```{r}
 sim_results_df |>
   group_by(true_mu)|>
@@ -201,3 +201,36 @@ sim_results_df |>
        y = "power",
        title = "Effect Size and Power in T-Test")
 ```
+#Describe the association between effect size and power:
+
+we can find that as the true mean increases, power also increases. After the true mean of 4, power is infinitely close to 1.
+
+#Make a plot showing the average estimate of μ̂ on the y axis and the true value of μ on the x axis. Make a second plot (or overlay on the first) the average estimate of μ̂ only in samples for which the null was rejected on the y axis and the true value of μ on the x axis. 
+
+```{r}
+avg_estimates_mean = 
+  sim_results_df |>
+  group_by(true_mu) |>
+  summarize(sample_mean_estimates = mean(estimate), 
+            estimate_rejected_null = mean(estimate[p.value < 0.05]))
+
+two_plot =
+  avg_estimates_mean|>
+  ggplot(aes(x = true_mu)) +
+  geom_line(aes(y = sample_mean_estimates), color = "green") +
+  geom_point(aes(y = sample_mean_estimates), color = "green") +
+  geom_line(aes(y = estimate_rejected_null), color = "red") +
+  geom_point(aes(y = estimate_rejected_null), color = "red")+
+  labs(title = "Average Estimates of muhat vs True Value μ",
+       x = "True Mean",
+       y = "Average of Estimated Mean") +
+  scale_color_manual(values = c("green", "red")) +
+  theme_minimal() +
+  scale_x_continuous(limits = c(0, 6), breaks = seq(0, 6, 1)) + 
+  theme(legend.position = "bottom")
+two_plot
+```
+
+#Is the sample average of μ̂ across tests for which the null is rejected approximately equal to the true value of μ? Why or why not?
+
+The green line shows the average estimate across all tests, and the red line shows the average estimate when the null hypothesis is rejected. When true mean is smaller than 4, the sample average of μ̂ across tests for which the null is rejected are different from the true means, because the effects size and power are small. When true mean is bigger than 4, the sample average of μ̂ across tests for which the null is rejected are the same as the true means, because the effects size and power are bigger.
