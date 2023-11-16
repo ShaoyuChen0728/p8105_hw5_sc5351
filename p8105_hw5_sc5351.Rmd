@@ -166,11 +166,24 @@ t_test = function(mu){
 ```
 
 #for mu = 0, simulation
-
 ```{r}
 for (i in 1:5000) {
   output[[i]] = t_test(mu = 0)
 }
 
 mu_0 = bind_rows(output)
+```
+
+#for mu = 1,2,3,4,5,6, simulation
+
+```{r}
+sim_results_df = 
+  expand_grid(
+    mu = 1:6,
+    iter = 1:5000
+  ) |> 
+  mutate(
+    estimate_df = map(mu, t_test)
+  ) |> 
+  unnest(estimate_df)
 ```
