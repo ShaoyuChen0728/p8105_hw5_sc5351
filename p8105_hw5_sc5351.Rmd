@@ -132,6 +132,7 @@ tidy_df |>
    theme_minimal()+
    facet_grid(~arm) 
 ```
-
+# comment on differences between groups.
+Based on this two plots, the experimental arm has higher value than control arm.
 
 
