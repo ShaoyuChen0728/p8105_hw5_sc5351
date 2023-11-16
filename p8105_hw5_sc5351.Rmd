@@ -135,4 +135,14 @@ tidy_df |>
 # comment on differences between groups.
 Based on this two plots, the experimental arm has higher value than control arm.
 
+## Problem 3
+
+#First set the following design elements
+```{r}
+n <- 30
+sigma <- 5
+mu <- 0:6
+n_dataset <- 5000
+alpha <- 0.05
+```
 
