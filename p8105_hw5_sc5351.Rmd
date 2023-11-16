@@ -143,7 +143,7 @@ n <- 30
 sigma <- 5
 mu <- 0:6
 n_dataset <- 5000
-alpha <- 0.05
+p.value <- 0.05
 ```
 
 #Perform t-test, return estimate, p-value and output 5000 list 
@@ -179,11 +179,25 @@ mu_0 = bind_rows(output)
 ```{r}
 sim_results_df = 
   expand_grid(
-    true_mu = 1:6,
+    true_mu = 0:6,
     iter = 1:5000
   ) |> 
   mutate(
     estimate_df = map(true_mu, t_test)
   ) |> 
   unnest(estimate_df)
+  bind_rows(mu_0)
+```
+#Make a plot showing the proportion of times the null was rejected (the power of the test) on the y axis and the true value of `mu` on the x axis
+```{r}
+sim_results_df |>
+  group_by(true_mu)|>
+  summarize(rejected = sum(p.value < 0.05) / 5000) |> 
+  ggplot(aes(x = true_mu, y = rejected))+
+  geom_point()+
+  geom_line()+
+  scale_x_continuous(limits = c(0,6))+
+  labs(x = "true mean",
+       y = "power",
+       title = "Effect Size and Power in T-Test")
 ```
